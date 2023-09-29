@@ -1,12 +1,16 @@
 package utils;
 
+import task.Deadline;
+import task.Event;
 import task.Task;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Ui {
 
@@ -50,5 +54,33 @@ public class Ui {
             out.append(i == 0 ? "" : "\n").append(i + 1).append(". ").append(filteredTasks.get(i).getListText());
         }
         echo(out.toString());
+    }
+
+    public void printListByDate(List<Task> tasks, String date) {
+        if (isValidDate(date)) {
+            StringBuilder out = new StringBuilder("These are the tasks due on " + date + ":\n");
+            AtomicInteger i = new AtomicInteger();
+            tasks.stream()
+                    .filter(task -> {
+                        if (task instanceof Deadline) {
+                            return ((Deadline) task).getBy().equals(date);
+                        } else if (task instanceof Event) {
+                            return ((Event) task).getTo().equals(date);
+                        }
+                        return false;
+                    }).forEach(task -> out.append(i.get() == 0 ? "" : "\n").append((i.getAndIncrement()) + 1).append(". ").append(task.getListText()));
+            echo(i.get() == 0 ? "Nothing due today!" : out.toString());
+        } else {
+            echo("☹ OOPS!!! I'm sorry, the date should be in the format of yyyy-MM-dd.");
+        }
+    }
+
+    private boolean isValidDate(String dateStr) {
+        try {
+            LocalDate.parse(dateStr);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
     }
 }

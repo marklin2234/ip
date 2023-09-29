@@ -44,7 +44,6 @@ public class Parser {
         } else if (in.startsWith("mark")) {
             String taskName = getTaskName("mark", in);
             int index = Integer.parseInt(taskName) - 1;
-            System.out.println(index);
             tasks.updateTaskStatus(index, true);
             ui.echo("Nice! I've marked this task as done:\n" + tasks.getTask(index).getListText());
         } else if (in.startsWith("unmark")) {
@@ -79,6 +78,9 @@ public class Parser {
         } else if (in.startsWith("find")) {
             String keyword = getTaskName("find", in);
             ui.printListByKeyword(tasks.getTasks(), keyword);
+        } else if (in.startsWith("due by")) {
+            String date = getTaskName("due by", in);
+            ui.printListByDate(tasks.getTasks(), date);
         } else {
             throw new DukeException("I'm sorry, but I don't know what that means :-(");
         }
