@@ -4,6 +4,9 @@ import task.Task;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Ui {
 
@@ -38,4 +41,14 @@ public class Ui {
         echo(out.toString());
     }
 
+    public void printListByKeyword(List<Task> tasks, String keyword) {
+        StringBuilder out = new StringBuilder("Here are matching tasks in your list:\n");
+        List<Task> filteredTasks = tasks.stream()
+                .filter(task -> task.getName().contains(keyword))
+                .collect(toList());
+        for (int i = 0; i < filteredTasks.size(); i++) {
+            out.append(i == 0 ? "" : "\n").append(i + 1).append(". ").append(filteredTasks.get(i).getListText());
+        }
+        echo(out.toString());
+    }
 }
